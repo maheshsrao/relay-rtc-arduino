@@ -105,6 +105,11 @@ void setup()
   delay(5000);
 
   while (1) {
+    if (schedule_num >= (NUMBER_OF_SCHEDULES - 1)) {
+      schedule_num = (NUMBER_OF_SCHEDULES - 1);
+      break;
+    }
+      
     if (chour < stime[schedule_num].off_sch.shour)
       break;
     else if (chour > stime[schedule_num].off_sch.shour) {
@@ -117,13 +122,11 @@ void setup()
     }
     else 
       break;
-
-    if (schedule_num >= (NUMBER_OF_SCHEDULES - 1))
-      break;
   }
 
   // If System ON time falls within ON schedule - switchon.
-  if (chour > stime[schedule_num].on_sch.shour || (chour == stime[schedule_num].on_sch.shour && cmin > stime[schedule_num].on_sch.smin))
+  if ((chour >= stime[schedule_num].on_sch.shour && cmin > stime[schedule_num].on_sch.smin) && \
+          (chour <= stime[schedule_num].off_sch.shour && cmin < stime[schedule_num].off_sch.smin))
     switchon();
 }
 
