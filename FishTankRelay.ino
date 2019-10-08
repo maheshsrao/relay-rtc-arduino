@@ -23,7 +23,7 @@
 #define ON  49
 
 // Total number of schedules
-#define NUMBER_OF_SCHEDULES  9
+#define NUMBER_OF_SCHEDULES  11
 
 void switchon(void);
 void switchoff(void);
@@ -55,15 +55,17 @@ struct schedules {
 
 // Schedule timings: {ON hour, ON Minute, OFF Hour, OFF Minute}
 struct schedules stime[NUMBER_OF_SCHEDULES] = {
-  {{7, 0}, {7, 45}}, //0.45
-  {{8, 0}, {9, 15}}, //1.15
-  {{11, 0}, {12, 0}}, //1.00
-  {{13, 0}, {14, 0}}, //1.00 (1PM - 2PM)
-  {{15, 45}, {16, 5}}, //0.20 (3:45PM - 4:05PM)
-  {{16, 45}, {17, 0}}, //0.15 (4:45PM - 5PM)
-  {{18, 0}, {18, 45}}, //0.45 (6PM - 6:45PM)
-  {{19, 45}, {20, 0}}, //0.15 (7:45PM - 8PM)
-  {{21, 0}, {22, 5}}  //1.30 (9PM - 10:05PM)
+  {{7, 0}, {7, 5}},         //0.5
+  {{7, 15}, {7, 45}},       //0.30
+  {{8, 0}, {9, 15}},        //1.15
+  {{9, 50}, {10, 10}},      //0.20
+  {{11, 0}, {12, 0}},       //1.00
+  {{13, 0}, {14, 0}},       //1.00 (1PM - 2PM)
+  {{15, 45}, {16, 5}},      //0.20 (3:45PM - 4:05PM)
+  {{16, 45}, {17, 0}},      //0.15 (4:45PM - 5PM)
+  {{18, 0}, {18, 30}},      //0.30 (6PM - 6:30PM)
+  {{19, 45}, {20, 0}},      //0.15 (7:45PM - 8PM)
+  {{21, 0}, {22, 5}}        //1.30 (9PM - 10:05PM)
 };
 
 // Relay is connected to pins 5 and 6
@@ -125,8 +127,11 @@ void setup()
   }
 
   // If System ON time falls within ON schedule - switchon.
-  if ((chour >= stime[schedule_num].on_sch.shour && cmin > stime[schedule_num].on_sch.smin) && \
-          (chour <= stime[schedule_num].off_sch.shour && cmin < stime[schedule_num].off_sch.smin))
+  if (chour > stime[schedule_num].on_sch.shour && chour < stime[schedule_num].off_sch.shour)
+    switchon();
+  else if (chour == stime[schedule_num].off_sch.shour && cmin < stime[schedule_num].off_sch.smin)
+    switchon();
+  else if (chour == stime[schedule_num].on_sch.shour && cmin > stime[schedule_num].on_sch.smin)
     switchon();
 }
 
@@ -169,11 +174,11 @@ void loop()
   }
 
   if (command == ON) {
-    command = "";
+    command = 0;
     switchon();
   }
   else if (command == OFF) {
-    command = "";
+    command = 0;
     switchoff();
   }
 
