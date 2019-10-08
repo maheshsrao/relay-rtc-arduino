@@ -190,8 +190,8 @@ void loop()
     year_counter = (int)current_time.year;
   }
 
-  // Wait 5 second before repeating :)
-  delay (5000);
+  // Wait 10 second before repeating :)
+  delay (10000);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
